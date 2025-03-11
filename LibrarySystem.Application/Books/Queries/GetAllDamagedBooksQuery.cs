@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibrarySystem.Application.Books.Queries
+namespace LibrarySystem.Application.Books.Queries;
+
+public class GetAllDamagedBooksQuery
+
 {
-	internal class GetAllDamagedBooksHandler
-	{
-	}
 }

@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibrarySystem.Application.Books.Commands
-{
-	internal class ShelveBookHandler
-	{
-	}
+namespace LibrarySystem.Application.Books.Commands;
+
+public class ShelveBookCommand
+{ 
 }

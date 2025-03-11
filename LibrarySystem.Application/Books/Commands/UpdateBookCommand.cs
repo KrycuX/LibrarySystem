@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LibrarySystem.Application.Books.Commands;
 
-namespace LibrarySystem.Application.Books.Commands
+public class UpdateBookCommand
 {
-	internal class UpdateBookHandler
-	{
-	}
 }

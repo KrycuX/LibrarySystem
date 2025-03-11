@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibrarySystem.Domain.Entities;
-
-internal class Shelf
+namespace LibrarySystem.Application.Books.Queries
 {
+	internal class GetAllBooksToShelveHandler
+	{
+	}
 }

@@ -4,13 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibrarySystem.Domain.Enums;
+namespace LibrarySystem.Domain.Entities;
 
-public enum BookStatus
+public class Author
 {
-	OnShelf = 0,
-	Borrowed = 1,
-	Returned = 2,
-	Damaged = 3,
-
 }

@@ -4,13 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibrarySystem.Domain.Enums;
-
-public enum BookStatus
+namespace LibrarySystem.Application.Books.Commands
 {
-	OnShelf = 0,
-	Borrowed = 1,
-	Returned = 2,
-	Damaged = 3,
-
+	internal class BorrowBookHandler
+	{
+	}
 }

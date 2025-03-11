@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibrarySystem.Api", "LibrarySystem\LibrarySystem.Api.csproj", "{09BDEF78-0F9B-4BC6-B5B6-3AB8D9C30AE3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibrarySystem.Api", "LibrarySystem.Api\LibrarySystem.Api.csproj", "{09BDEF78-0F9B-4BC6-B5B6-3AB8D9C30AE3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibrarySystem.Application", "LibrarySystem.Application\LibrarySystem.Application.csproj", "{F7A943A4-AFC3-4D85-A4E7-37036CA16B9E}"
 EndProject

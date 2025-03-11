@@ -5,16 +5,16 @@ namespace LibrarySystem.Domain.Entities;
 
 public class Book
 {
-	public Guid Id { get; private set; }
+	public Guid Id { get; set; }
 	[Required]
-	public string ISBN { get; private set; }
+	public string ISBN { get; set; } = string.Empty;
 	[Required]
-	public string Title { get; private set; }
-	[Required]
-	public string Author { get; private set; }
-	public BookStatus Status { get; private set; }
-	public string? ShelfLocation { get; private set; }
-	public string? BorrowedBy { get; private set; }
+	public string Title { get; set; } = string.Empty;
+    [Required]
+	public string Author { get; set; } = string.Empty;
+    public BookStatus Status { get; set; }
+	public string? ShelfLocation { get; set; }
+	public string? BorrowedBy { get; set; }
 
 
 	public void Borrow(string borrowedBy)

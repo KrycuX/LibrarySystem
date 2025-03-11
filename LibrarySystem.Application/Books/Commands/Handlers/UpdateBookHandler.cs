@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 
 namespace LibrarySystem.Application.Books.Commands;
 
-public class UpdateBookHandler
+public class UpdateBookHandler : IRequestHandler<UpdateBookCommand>
 {
+    public Task Handle(UpdateBookCommand request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using LibrarySystem.Application;
 using LibrarySystem.Infrastructure;
+using Microsoft.OpenApi.Models;
 
 namespace LibrarySystem.Api;
 public class Start
@@ -14,7 +15,17 @@ public class Start
 	public void ConfigureServices(IServiceCollection services)
 	{
 		services.AddControllers();
-		services.AddApplication();
+        services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc(
+                "v1",
+                new OpenApiInfo
+                {
+                    Title = "Library API",
+                    Version = "v1"
+                });
+        });
+        services.AddApplication();
 		services.AddInfrastructure(_configuration);		
 	}
 

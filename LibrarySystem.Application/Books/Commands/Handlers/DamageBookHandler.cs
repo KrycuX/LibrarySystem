@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 
 namespace LibrarySystem.Application.Books.Commands;
 
-public class DamageBookHandler
+public class DamageBookHandler : IRequestHandler<DamageBookCommand>
 {
+    public Task Handle(DamageBookCommand request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 }

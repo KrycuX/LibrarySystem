@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
 
 namespace LibrarySystem.Application.Books.Commands;
 
-public class BorrowBookHandler
+public class BorrowBookHandler : IRequestHandler<BorrowBookCommand>
 {
+    public Task Handle(BorrowBookCommand request, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 }

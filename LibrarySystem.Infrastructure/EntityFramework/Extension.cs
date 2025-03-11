@@ -9,9 +9,8 @@ public static class Extension
 {
 	public static IServiceCollection AddEF(this IServiceCollection services, IConfiguration configuration)
 	{
-		services.AddDbContext<LibraryDbContext>(options =>
-				options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-
-		return services;
+		services.AddDbContext<LibraryDbContext>(options => options.UseInMemoryDatabase("LibraryDatabase"));
+        Helpers.DbInit.Seed(services);
+        return services;
 	}
 }

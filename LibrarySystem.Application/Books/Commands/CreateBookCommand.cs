@@ -1,16 +1,13 @@
-﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel.Channels;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LibrarySystem.Shared.DTOs;
+using MediatR;
+
 
 namespace LibrarySystem.Application.Books.Commands;
 
-public class CreateBookCommand : IRequest<Guid>
+public class CreateBookCommand : IRequest<BookDto>
 {
-	public string Title { get; set; }
-	public string Author { get; set; }
-	public string ISBN { get; set; }
+    public string Title { get; init; } = string.Empty;
+    public string Author { get; init; } = string.Empty;
+    public string ISBN { get; init; } = string.Empty;
+    public string ShelfLocation { get; init; } = string.Empty;
 }

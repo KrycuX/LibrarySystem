@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace LibrarySystem.Persistence.Context;
 
-internal class LibraryDbContext
+internal sealed class LibraryDbContext
 {
 }

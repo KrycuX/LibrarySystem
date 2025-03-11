@@ -41,18 +41,15 @@ namespace LibrarySystem.Controllers
         }
 
         [HttpPost("CreateBook")]
-        public async Task<ActionResult<BookDto>> CreateBook([FromBody] BookDto book)
+        public async Task<ActionResult<BookDto>> CreateBook([FromBody] CreateBookCommand command)
         {
             try
             {
-                var command = new CreateBookCommand
+                if (!ModelState.IsValid)
                 {
-                    Title = book.Title,
-                    Author = book.Author,
-                    ISBN = book.ISBN,
-                    ShelfLocation = book.ShelfLocation ?? string.Empty,
-                };
-               var result = await _mediator.Send(command);
+                    return BadRequest(ModelState);
+                }
+                var result = await _mediator.Send(command);
                return CreatedAtAction(nameof(CreateBook),result);
             }
             catch (Exception ex)

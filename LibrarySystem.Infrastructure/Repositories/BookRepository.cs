@@ -11,8 +11,6 @@ internal sealed class BookRepository(LibraryDbContext libraryDbContext) : IBookR
 {
     private readonly LibraryDbContext _libraryDbContext = libraryDbContext;
 
-   
-
     public async Task<PaginatedResult<BookDto>> GetItemsAsync(int page, int pageSize, SortByEnum? sortBy, bool descending)
     {
         var query = _libraryDbContext.Books.AsQueryable();
@@ -68,5 +66,10 @@ internal sealed class BookRepository(LibraryDbContext libraryDbContext) : IBookR
     {
         _libraryDbContext.Books.Update(book);
         await _libraryDbContext.SaveChangesAsync();
+    }
+
+    public async Task<Book?> GetByIdAsync(Guid id)
+    {
+        return await _libraryDbContext.Books.FindAsync(id);
     }
 }

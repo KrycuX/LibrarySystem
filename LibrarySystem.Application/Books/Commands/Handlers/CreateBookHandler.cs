@@ -1,15 +1,27 @@
 ﻿using LibrarySystem.Application.Common.Interfaces;
 using LibrarySystem.Shared.DTOs;
+using MapsterMapper;
 using MediatR;
 
 namespace LibrarySystem.Application.Books.Commands;
 
-public class CreateBookHandler(IBookRepository bookRepository) : IRequestHandler<CreateBookCommand, BookDto>
+public class CreateBookHandler(IBookRepository bookRepository, IMapper mapper) : IRequestHandler<CreateBookCommand, BookDto>
 {
     private readonly IBookRepository _bookRepository = bookRepository;
+    private readonly IMapper _mapper = mapper;
 
-    public Task<BookDto> Handle(CreateBookCommand request, CancellationToken cancellationToken)
+    public async Task<BookDto> Handle(CreateBookCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+       var result = await _bookRepository.AddAsync(new()
+        {
+            Id= Guid.NewGuid(),
+            Title = request.Title,
+            Author= request.Author,
+            ISBN = request.ISBN,
+            ShelfLocation= request.ShelfLocation,
+            Status = Domain.Enums.BookStatus.OnShelf
+        });
+
+        return _mapper.Map<BookDto>(result);
     }
 }

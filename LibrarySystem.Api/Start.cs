@@ -16,6 +16,8 @@ public class Start
 	public void ConfigureServices(IServiceCollection services)
 	{
 		services.AddControllers();
+		services.AddControllersWithViews();
+		services.AddRazorPages();
 		services.AddSwaggerGen(options =>
 		{
 			options.SwaggerDoc(
@@ -36,13 +38,20 @@ public class Start
 		if (env.IsDevelopment())
 		{
 			app.UseDeveloperExceptionPage();
+			app.UseWebAssemblyDebugging();
 			app.UseSwagger();
 			app.UseSwaggerUI();
 		}
-
+		app.UseBlazorFrameworkFiles();
+		app.UseStaticFiles();
 		app.UseRouting();
 
-		app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+		app.UseEndpoints(endpoints => { 
+			endpoints.MapControllers(); 
+			endpoints.MapRazorPages();
+			endpoints.MapFallbackToFile("index.html");
+		});
+	
 
 	}
 }

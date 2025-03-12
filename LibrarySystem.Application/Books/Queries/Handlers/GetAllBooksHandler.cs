@@ -1,4 +1,5 @@
 ﻿using LibrarySystem.Application.Common.Interfaces;
+using LibrarySystem.Shared.Books.Query;
 using LibrarySystem.Shared.DTOs;
 using LibrarySystem.Shared.Wrappers;
 using MediatR;

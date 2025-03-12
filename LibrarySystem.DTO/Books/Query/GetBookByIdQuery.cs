@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibrarySystem.Application.Books.Queries;
+namespace LibrarySystem.Shared.Books.Query;
 
-public class GetBookByIdQuery: IRequest<BookDto?>
+public class GetBookByIdQuery : IRequest<BookDto?>
 {
 	public Guid Id { get; set; }
 }

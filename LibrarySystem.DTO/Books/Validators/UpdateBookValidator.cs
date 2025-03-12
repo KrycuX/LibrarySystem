@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
-using LibrarySystem.Application.Books.Commands;
 using LibrarySystem.Application.Common.Interfaces;
+using LibrarySystem.Shared.Books.Commands;
 
-namespace LibrarySystem.Application.Books.Validators;
+namespace LibrarySystem.Shared.Books.Validators;
 
 public class UpdateBookValidator : AbstractValidator<UpdateBookCommand>
 {
@@ -10,7 +10,7 @@ public class UpdateBookValidator : AbstractValidator<UpdateBookCommand>
 
 	public UpdateBookValidator(IBookRepository bookRepository)
 	{
-		_bookRepository =bookRepository;
+		_bookRepository = bookRepository;
 		RuleFor(x => x.Title)
 			.NotEmpty().WithMessage("Title is required");
 

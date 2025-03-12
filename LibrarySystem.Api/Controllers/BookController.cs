@@ -1,6 +1,6 @@
 using FluentValidation;
-using LibrarySystem.Application.Books.Commands;
-using LibrarySystem.Application.Books.Queries;
+using LibrarySystem.Shared.Books.Commands;
+using LibrarySystem.Shared.Books.Query;
 using LibrarySystem.Shared.DTOs;
 using LibrarySystem.Shared.Helpers;
 using LibrarySystem.Shared.Wrappers;

@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
-using LibrarySystem.Application.Books.Commands;
 using LibrarySystem.Application.Common.Interfaces;
+using LibrarySystem.Shared.Books.Commands;
 
-namespace LibrarySystem.Application.Books.Validators;
+namespace LibrarySystem.Shared.Books.Validators;
 
 public class CreateBookValidator : AbstractValidator<CreateBookCommand>
 {
@@ -21,7 +21,7 @@ public class CreateBookValidator : AbstractValidator<CreateBookCommand>
 			.NotEmpty().WithMessage("ISBN is required")
 			.Length(17).WithMessage("ISBN must be 17 chars")
 			.MustAsync(CheckUnique).WithMessage("ISBN must be unique");
-		
+
 	}
 
 	private async Task<bool> CheckUnique(string isbn, CancellationToken token)

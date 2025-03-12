@@ -1,4 +1,4 @@
-﻿using FluentValidation.AspNetCore;
+﻿
 using LibrarySystem.Application;
 using LibrarySystem.Infrastructure;
 using Microsoft.OpenApi.Models;
@@ -16,18 +16,19 @@ public class Start
 	public void ConfigureServices(IServiceCollection services)
 	{
 		services.AddControllers();
-        services.AddSwaggerGen(options =>
-        {
-            options.SwaggerDoc(
-                "v1",
-                new OpenApiInfo
-                {
-                    Title = "Library API",
-                    Version = "v1"
-                });
-        });
-        services.AddApplication();
-		services.AddInfrastructure(_configuration);		
+		services.AddSwaggerGen(options =>
+		{
+			options.SwaggerDoc(
+				"v1",
+				new OpenApiInfo
+				{
+					Title = "Library API",
+					Version = "v1"
+				});
+		});
+		services.AddApplication();
+		services.AddShared();
+		services.AddInfrastructure(_configuration);
 	}
 
 	public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -7,13 +7,15 @@ using MediatR;
 
 namespace LibrarySystem.Application.Books.Commands;
 
-public class CreateBookHandler(IBookRepository bookRepository, IMapper mapper) : IRequestHandler<CreateBookCommand, ResponseResult<BookDto>>
+public class CreateBookHandler(IBookRepository bookRepository, IMapper mapper) : IRequestHandler<CreateBookCommand, ResponseResult<BookDto?>>
 {
     private readonly IBookRepository _bookRepository = bookRepository;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<ResponseResult<BookDto>> Handle(CreateBookCommand request, CancellationToken cancellationToken)
+    public async Task<ResponseResult<BookDto?>> Handle(CreateBookCommand request, CancellationToken cancellationToken)
     {
+        if (await _bookRepository.CheckIsbnAsync(request.ISBN))
+            return new(false, null, "ISBN must be unique");
        var result = await _bookRepository.AddAsync(new()
         {
             Id= Guid.NewGuid(),

@@ -11,6 +11,9 @@ public class UpdateBookHandler(IBookRepository bookRepository) : IRequestHandler
 
 	public async Task<ResponseResult> Handle(UpdateBookCommand request, CancellationToken cancellationToken)
     {
+		if (await _bookRepository.CheckIsbnAsync(request.ISBN))
+			return new(false, "ISBN must be unique");
+
 		var book = await _bookRepository.GetByIdAsync(request.Id);
 		if (book == null)
 			return new(false, $"Book of id: '{request.Id}' do not exist.");

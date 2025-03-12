@@ -5,7 +5,7 @@ using MediatR;
 
 namespace LibrarySystem.Shared.Books.Commands;
 
-public class CreateBookCommand : IRequest<ResponseResult<BookDto>>
+public class CreateBookCommand : IRequest<ResponseResult<BookDto?>>
 {
 	public string Title { get; init; } = string.Empty;
 	public string Author { get; init; } = string.Empty;

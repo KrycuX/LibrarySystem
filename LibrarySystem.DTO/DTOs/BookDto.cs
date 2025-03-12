@@ -1,4 +1,5 @@
-﻿using LibrarySystem.Shared.Helpers;
+﻿using System.ComponentModel.DataAnnotations;
+using LibrarySystem.Shared.Helpers;
 
 namespace LibrarySystem.Shared.DTOs;
 

@@ -41,7 +41,7 @@ internal sealed class BookRepository(LibraryDbContext libraryDbContext) : IBookR
 
                                 })
                                 .ToListAsync();
-        return new PaginatedResult<BookDto>(items, totalItems,page,pageSize);
+        return new PaginatedResult<BookDto>(items, totalItems,page,pageSize, sortBy,descending);
     }
     public async Task<Book> AddAsync(Book book)
     {

@@ -1,0 +1,181 @@
+﻿@page "/library"
+@inject HttpClient Http
+
+<PageTitle>Library</PageTitle>
+
+<h1>Books</h1>
+
+
+@if (Paginated == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th @onclick="()=>SortBooks(SortByEnum.ISBN)">ISBN @GetSortIndicator(SortByEnum.ISBN)</th>
+                <th @onclick="()=> SortBooks(SortByEnum.Title)">Title @GetSortIndicator(SortByEnum.Title)</th>
+                <th @onclick="()=>SortBooks(SortByEnum.Author)">Author @GetSortIndicator(SortByEnum.Author)</th>
+                <th >Shelf Location </th>               
+                <th @onclick="()=>SortBooks(SortByEnum.Status)">Status @GetSortIndicator(SortByEnum.Status)</th>
+                <th>Action </th>
+                <th>Remove</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @if (Paginated.Items != null)
+            {
+                @foreach (var book in Paginated.Items)
+                {
+                    <tr>                   
+                        <td>@book.ISBN</td>
+                        <td>@book.Title</td>
+                        <td>@book.Author</td>
+                        <td>@book.ShelfLocation</td>
+                        <td>@book.Status</td>
+                        <td>
+                            @if (book.Status is BookStatusDto.OnShelf)
+                            {
+                                <button class="btn btn-primary" @onclick="() => BorrowBook(book.Id)">Borrow</button>
+                            }else
+                            @if (book.Status is  BookStatusDto.Borrowed) 
+                            {
+                                <button class="btn btn-primary" @onclick="() => ReturnBook(book.Id)">Return</button>
+                            }
+                            else
+                            @if (book.Status is (BookStatusDto.Damaged or BookStatusDto.Returned))
+                            {
+                                <button class="btn btn-primary" @onclick="() => ShelveBook(book.Id)">Shelve</button>
+                            }
+
+                        </td>
+                        
+                    <td>
+                            <button class="btn btn-danger" @onclick="() => DeleteBook(book.Id)" disabled="@(book.Status != BookStatusDto.OnShelf)">
+                                Remove
+                            </button>
+                    </td>
+                    </tr>
+                }  
+            }
+
+        </tbody>
+    </table>
+    <div>
+        <button @onclick="PreviousPage" disabled="@(!HasPreviousPage)">Previous</button>
+        <span>Page @Paginated.Page of @Paginated.TotalPages</span>
+        <button @onclick="NextPage" disabled="@(!HasNextPage)">Next</button>
+    </div>
+}
+
+@code {
+    private int pageNumber = 1;
+    private int pageSize = 10;
+
+    private SortByEnum sortBy = SortByEnum.ISBN; // Domyślnie sortowanie po ISBN
+    private bool sortDescending = false;
+
+    private PaginatedResult<BookDto>? Paginated;
+
+    private bool HasPreviousPage => pageNumber > 1;
+    private bool HasNextPage => pageNumber < Paginated?.TotalPages;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPageAsync();
+    }
+    private async Task LoadPageAsync()
+    {
+        // Pobierz dane z API, z uwzględnieniem stronicowania
+        var response = await Http.GetFromJsonAsync<ApiResponse<PaginatedResult<BookDto>>>($"api/Book/GetBooks?page={pageNumber}&pageSize={pageSize}&sortBy={sortBy}&descending={sortDescending}");
+        if (response?.IsSucceed == true && response.Model != null)
+            Paginated = response.Model;
+
+    }
+    private async Task NextPage()
+    {
+        if (HasNextPage)
+        {
+            pageNumber++;
+            await LoadPageAsync();
+        }
+    }
+
+    private async Task PreviousPage()
+    {
+        if (HasPreviousPage)
+        {
+            pageNumber--;
+            await LoadPageAsync();
+        }
+    }
+    private async Task SortBooks(SortByEnum criteria)
+    {
+        if (sortBy == criteria)
+        {
+            sortDescending = !sortDescending;
+        }
+        else
+        {
+            sortBy = criteria;
+            sortDescending = false;
+        }
+
+        await LoadPageAsync();
+    }
+
+    private string GetSortIndicator(SortByEnum criteria)
+    {
+        if (sortBy != criteria)
+            return string.Empty;
+
+        return sortDescending ? "↓" : "↑";
+    }
+
+    private async Task BorrowBook(Guid id)
+    {
+        var response = await Http.PutAsJsonAsync($"api/Book/BorrowBook?id={id}", "Użytkownik");
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadPageAsync();
+        }
+    }
+
+    private async Task ReturnBook(Guid id)
+    {
+        var response = await Http.PutAsync($"api/Book/ReturnBook?id={id}", null);
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadPageAsync();
+        }
+    }
+
+    private async Task DeleteBook(Guid id)
+    {
+        var response = await Http.DeleteAsync($"api/Book/DeleteBook?id={id}");
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadPageAsync();
+        }
+    }
+    private async Task ShelveBook(Guid id)
+    {
+        var response = await Http.PutAsJsonAsync($"api/Book/ShelveBook?id={id}", "A1");
+        if (response.IsSuccessStatusCode)
+        {
+            await LoadPageAsync();
+        }
+    }
+
+
+    public class ApiResponse<T>
+    {
+        public bool IsSucceed { get; set; }
+        public T Model { get; set; }
+        public string Message { get; set; }
+        public string Ex { get; set; }
+    }
+}

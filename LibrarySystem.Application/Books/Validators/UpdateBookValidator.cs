@@ -4,13 +4,13 @@ using LibrarySystem.Application.Common.Interfaces;
 
 namespace LibrarySystem.Application.Books.Validators;
 
-public class CreateBookValidator : AbstractValidator<CreateBookCommand>
+public class UpdateBookValidator : AbstractValidator<UpdateBookCommand>
 {
 	private readonly IBookRepository _bookRepository;
 
-	public CreateBookValidator(IBookRepository bookRepository)
+	public UpdateBookValidator(IBookRepository bookRepository)
 	{
-		_bookRepository = bookRepository;
+		_bookRepository =bookRepository;
 		RuleFor(x => x.Title)
 			.NotEmpty().WithMessage("Title is required");
 
@@ -21,7 +21,6 @@ public class CreateBookValidator : AbstractValidator<CreateBookCommand>
 			.NotEmpty().WithMessage("ISBN is required")
 			.Length(17).WithMessage("ISBN must be 17 chars")
 			.MustAsync(CheckUnique).WithMessage("ISBN must be unique");
-		
 	}
 
 	private async Task<bool> CheckUnique(string isbn, CancellationToken token)

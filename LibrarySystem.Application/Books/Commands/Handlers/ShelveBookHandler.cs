@@ -1,16 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LibrarySystem.Application.Common.Interfaces;
+using LibrarySystem.Shared.Wrappers;
 using MediatR;
 
 namespace LibrarySystem.Application.Books.Commands;
 
-public class ShelveBookHandler : IRequestHandler<ShelveBookCommand>
+public class ShelveBookHandler(IBookRepository bookRepository) : IRequestHandler<ShelveBookCommand,ResponseResult>
 {
-    public Task Handle(ShelveBookCommand request, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
+	private readonly IBookRepository _bookRepository = bookRepository;
+
+	public async Task<ResponseResult> Handle(ShelveBookCommand request, CancellationToken cancellationToken)
+	{
+		var book = await _bookRepository.GetByIdAsync(request.Id);
+		if (book == null)
+			return new(false, $"Book of id: '{request.Id}' do not exist.");
+
+		book.Shelve(request.ShelfLocation);
+		await _bookRepository.UpdateAsync(book);
+		return new(true, string.Empty);
+	}
 }

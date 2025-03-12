@@ -1,16 +1,17 @@
 ﻿using LibrarySystem.Application.Common.Interfaces;
 using LibrarySystem.Shared.DTOs;
+using LibrarySystem.Shared.Wrappers;
 using MapsterMapper;
 using MediatR;
 
 namespace LibrarySystem.Application.Books.Commands;
 
-public class CreateBookHandler(IBookRepository bookRepository, IMapper mapper) : IRequestHandler<CreateBookCommand, BookDto>
+public class CreateBookHandler(IBookRepository bookRepository, IMapper mapper) : IRequestHandler<CreateBookCommand, ResponseResult<BookDto>>
 {
     private readonly IBookRepository _bookRepository = bookRepository;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<BookDto> Handle(CreateBookCommand request, CancellationToken cancellationToken)
+    public async Task<ResponseResult<BookDto>> Handle(CreateBookCommand request, CancellationToken cancellationToken)
     {
        var result = await _bookRepository.AddAsync(new()
         {
@@ -21,7 +22,7 @@ public class CreateBookHandler(IBookRepository bookRepository, IMapper mapper) :
             ShelfLocation= request.ShelfLocation,
             Status = Domain.Enums.BookStatus.OnShelf
         });
-
-        return _mapper.Map<BookDto>(result);
+	    var book=_mapper.Map<BookDto>(result);
+		return new(true,book,string.Empty);
     }
 }

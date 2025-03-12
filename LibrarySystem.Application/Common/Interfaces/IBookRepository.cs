@@ -2,6 +2,7 @@
 using LibrarySystem.Domain.Entities;
 using LibrarySystem.Shared.DTOs;
 using LibrarySystem.Shared.Helpers;
+using LibrarySystem.Shared.Wrappers;
 
 namespace LibrarySystem.Application.Common.Interfaces;
 
@@ -12,4 +13,5 @@ public interface IBookRepository
     Task<Book> AddAsync(Book book);
     Task UpdateAsync(Book book);
     Task DeleteAsync(Guid id);
+	Task<bool> CheckIsbnAsync(string isbn);
 }

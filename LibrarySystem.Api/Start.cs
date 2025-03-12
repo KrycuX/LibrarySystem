@@ -1,4 +1,5 @@
-﻿using LibrarySystem.Application;
+﻿using FluentValidation.AspNetCore;
+using LibrarySystem.Application;
 using LibrarySystem.Infrastructure;
 using Microsoft.OpenApi.Models;
 

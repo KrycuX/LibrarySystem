@@ -34,9 +34,15 @@ public class Book
 	}
 	public void Shelve(string location)
 	{
-		if (Status is not BookStatus.Returned || Status is not BookStatus.Damaged) throw new InvalidOperationException("Book cannot be shelved");
+		if (Status is not (BookStatus.Returned or BookStatus.Damaged)) throw new InvalidOperationException("Book cannot be shelved");
 
 		Status = BookStatus.OnShelf;
 		ShelfLocation = location;
+	}
+	public void Damaged()
+	{
+		if (Status is not (BookStatus.OnShelf or BookStatus.Returned)) throw new InvalidOperationException("Book cannot be set as damaged");
+
+		Status = BookStatus.Damaged;
 	}
 }

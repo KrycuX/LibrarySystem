@@ -1,13 +1,15 @@
+using FluentValidation;
 using LibrarySystem.Application.Books.Commands;
 using LibrarySystem.Application.Books.Queries;
 using LibrarySystem.Shared.DTOs;
 using LibrarySystem.Shared.Helpers;
+using LibrarySystem.Shared.Wrappers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LibrarySystem.Controllers
 {
-    [ApiController]
+	[ApiController]
     [Route("api/[controller]")]
     public class BookController(IMediator mediator, ILogger<BookController> logger) : ControllerBase
     {
@@ -41,15 +43,17 @@ namespace LibrarySystem.Controllers
         }
 
         [HttpPost("CreateBook")]
-        public async Task<ActionResult<BookDto>> CreateBook([FromBody] CreateBookCommand command)
+        public async Task<ActionResult<BookDto>> CreateBook([FromBody] CreateBookCommand command, [FromServices] IValidator<CreateBookCommand> validator)
         {
             try
             {
-                if (!ModelState.IsValid)
+				var valid = await validator.ValidateAsync(command);
+				if (!valid.IsValid)
                 {
-                    return BadRequest(ModelState);
+                    return BadRequest(valid);
                 }
-                var result = await _mediator.Send(command);
+
+               var result = await _mediator.Send(command);
                return CreatedAtAction(nameof(CreateBook),result);
             }
             catch (Exception ex)
@@ -60,21 +64,17 @@ namespace LibrarySystem.Controllers
 
         }
         [HttpPut("UpdateBook")]
-        public async Task<ActionResult> UpdateBook(Guid id,[FromBody] BookDto book)
+        public async Task<ActionResult> UpdateBook([FromBody] UpdateBookCommand updateBookCommand, [FromServices] IValidator<UpdateBookCommand> validator)
         {
             try
             {
-                if(id != book.Id)
-                    return BadRequest();
-                
-                var command = new UpdateBookCommand
+                var valid = await validator.ValidateAsync(updateBookCommand);
+                if (!valid.IsValid)
                 {
-                    Title = book.Title,
-                    Author = book.Author,
-                    ISBN = book.ISBN,
-                    ShelfLocation = book.ShelfLocation ?? string.Empty,
-                };
-                await _mediator.Send(command);
+					return BadRequest(valid);
+				}
+
+                await _mediator.Send(updateBookCommand);
                 return NoContent();
             }
             catch (Exception ex)

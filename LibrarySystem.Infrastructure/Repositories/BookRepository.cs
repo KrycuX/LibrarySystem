@@ -3,6 +3,7 @@ using LibrarySystem.Domain.Entities;
 using LibrarySystem.Infrastructure.Context;
 using LibrarySystem.Shared.DTOs;
 using LibrarySystem.Shared.Helpers;
+using LibrarySystem.Shared.Wrappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibrarySystem.Infrastructure.Repositories;
@@ -72,4 +73,9 @@ internal sealed class BookRepository(LibraryDbContext libraryDbContext) : IBookR
     {
         return await _libraryDbContext.Books.FindAsync(id);
     }
+
+	public async Task<bool> CheckIsbnAsync(string isbn)
+	{
+		return !await _libraryDbContext.Books.AnyAsync(x=>x.ISBN.Equals(isbn));
+	}
 }

@@ -1,11 +1,26 @@
-﻿using MediatR;
+﻿using LibrarySystem.Application.Common.Interfaces;
+using LibrarySystem.Shared.Wrappers;
+using MediatR;
 
 namespace LibrarySystem.Application.Books.Commands;
 
-public class UpdateBookHandler : IRequestHandler<UpdateBookCommand>
+public class UpdateBookHandler(IBookRepository bookRepository) : IRequestHandler<UpdateBookCommand, ResponseResult>
 {
-    public Task Handle(UpdateBookCommand request, CancellationToken cancellationToken)
+	private readonly IBookRepository _bookRepository = bookRepository;
+
+	public async Task<ResponseResult> Handle(UpdateBookCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-    }
+		var book = await _bookRepository.GetByIdAsync(request.Id);
+		if (book == null)
+			return new(false, $"Book of id: '{request.Id}' do not exist.");
+
+		book.ShelfLocation = request.ShelfLocation;
+		book.ISBN = request.ISBN;
+		book.Author = request.Author;
+		book.Title = request.Title;
+
+		await _bookRepository.UpdateAsync(book);
+		return new(true, string.Empty);
+
+	}
 }

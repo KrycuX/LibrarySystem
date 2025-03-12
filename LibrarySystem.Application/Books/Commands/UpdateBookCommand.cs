@@ -1,8 +1,9 @@
-﻿using MediatR;
+﻿using LibrarySystem.Shared.Wrappers;
+using MediatR;
 
 namespace LibrarySystem.Application.Books.Commands;
 
-public class UpdateBookCommand : IRequest
+public class UpdateBookCommand : IRequest<ResponseResult>
 {
     public Guid Id { get; init; }
     public string Title { get; init; } = string.Empty;

@@ -14,7 +14,7 @@ else
 {
     <table class="table">
         <thead>
-            <tr>
+            <tr><th></th>
                 <th @onclick="()=>SortBooks(SortByEnum.ISBN)">ISBN @GetSortIndicator(SortByEnum.ISBN)</th>
                 <th @onclick="()=> SortBooks(SortByEnum.Title)">Title @GetSortIndicator(SortByEnum.Title)</th>
                 <th @onclick="()=>SortBooks(SortByEnum.Author)">Author @GetSortIndicator(SortByEnum.Author)</th>
@@ -30,7 +30,8 @@ else
             {
                 @foreach (var book in Paginated.Items)
                 {
-                    <tr>                   
+                    <tr>
+                        <td><button class="btn btn-warning" @onclick="() => OpenEditBookModal(book)">Edit</button></td>
                         <td>@book.ISBN</td>
                         <td>@book.Title</td>
                         <td>@book.Author</td>
@@ -52,6 +53,7 @@ else
                             }
 
                         </td>
+
                         
                     <td>
                             <button class="btn btn-danger" @onclick="() => DeleteBook(book.Id)" disabled="@(book.Status != BookStatusDto.OnShelf)">
@@ -69,8 +71,32 @@ else
         <span>Page @Paginated.Page of @Paginated.TotalPages</span>
         <button @onclick="NextPage" disabled="@(!HasNextPage)">Next</button>
     </div>
-}
 
+}
+@if (IsModalOpen)
+{
+    <div class="modal show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@(IsEditing ? "Edit Book" : "Add Book")</h5>
+                    <button type="button" class="btn-close" @onclick="CloseModal"></button>
+                </div>
+                <div class="modal-body">
+                    <input bind="@CurrentBook.Title" placeholder="Title" class="form-control mb-2" />
+                    <input bind="@CurrentBook.Author" placeholder="Author" class="form-control mb-2" />
+                    <input bind="@CurrentBook.ISBN" placeholder="ISBN" class="form-control mb-2" />
+                    <input bind="@CurrentBook.ShelfLocation" placeholder="Shelf Location" class="form-control mb-2" />
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CloseModal">Cancel</button>
+                    <button class="btn btn-primary" @onclick="SaveBook">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop show"></div>
+}
 @code {
     private int pageNumber = 1;
     private int pageSize = 10;
@@ -83,6 +109,9 @@ else
     private bool HasPreviousPage => pageNumber > 1;
     private bool HasNextPage => pageNumber < Paginated?.TotalPages;
 
+    private bool IsModalOpen = false;
+    private bool IsEditing = false;
+    private BookDto CurrentBook = new();
     protected override async Task OnInitializedAsync()
     {
         await LoadPageAsync();
@@ -169,7 +198,45 @@ else
             await LoadPageAsync();
         }
     }
+    private void OpenAddBookModal()
+    {
+        CurrentBook = new();
+        IsEditing = false;
+        IsModalOpen = true;
+    }
 
+    private void OpenEditBookModal(BookDto book)
+    {
+        CurrentBook = new BookDto
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Author = book.Author,
+                ISBN = book.ISBN,
+                ShelfLocation = book.ShelfLocation
+            };
+        IsEditing = true;
+        IsModalOpen = true;
+    }
+
+    private async Task SaveBook()
+    {
+        if (IsEditing)
+        {
+            await Http.PutAsJsonAsync("api/Book/UpdateBook", CurrentBook);
+        }
+        else
+        {
+            await Http.PostAsJsonAsync("api/Book/AddBook", CurrentBook);
+        }
+        IsModalOpen = false;
+        await LoadPageAsync();
+    }
+
+    private void CloseModal()
+    {
+        IsModalOpen = false;
+    }
 
     public class ApiResponse<T>
     {

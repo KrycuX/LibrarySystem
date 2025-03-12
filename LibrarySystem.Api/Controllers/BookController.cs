@@ -25,6 +25,9 @@ namespace LibrarySystem.Controllers
         {
             try
             {
+                if (page < 0)
+                    return BadRequest();
+
                 var query = new GetAllBooksQuery
                 {
                     Page = page,

@@ -1,4 +1,6 @@
-﻿using LibrarySystem.Application.Common.Interfaces;
+﻿using FluentValidation.Results;
+using LibrarySystem.Application.Common.Interfaces;
+using LibrarySystem.Shared;
 using LibrarySystem.Shared.Books.Commands;
 using LibrarySystem.Shared.DTOs;
 using LibrarySystem.Shared.Wrappers;
@@ -14,9 +16,14 @@ public class CreateBookHandler(IBookRepository bookRepository, IMapper mapper) :
 
     public async Task<ResponseResult<BookDto?>> Handle(CreateBookCommand request, CancellationToken cancellationToken)
     {
-        if (await _bookRepository.CheckIsbnAsync(request.ISBN))
-            return new(false, null, "ISBN must be unique");
-       var result = await _bookRepository.AddAsync(new()
+
+        if (await _bookRepository.IsbnExist(request.ISBN))
+			throw new ValidationException(
+				[
+					new(nameof(request.ISBN), "ISBN must be unique")
+				]);		
+
+		var result = await _bookRepository.AddAsync(new()
         {
             Id= Guid.NewGuid(),
             Title = request.Title,

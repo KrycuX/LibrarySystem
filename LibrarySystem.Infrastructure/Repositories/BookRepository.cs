@@ -51,6 +51,7 @@ internal sealed class BookRepository(LibraryDbContext libraryDbContext) : IBookR
         var bookToReturn = await _libraryDbContext.Books.FindAsync(book.Id);
         if (bookToReturn is null)
             throw new Exception("Book is not added properly");
+
         return bookToReturn;
     }
 
@@ -74,8 +75,8 @@ internal sealed class BookRepository(LibraryDbContext libraryDbContext) : IBookR
         return await _libraryDbContext.Books.FindAsync(id);
     }
 
-	public async Task<bool> CheckIsbnAsync(string isbn)
+	public async Task<bool> IsbnExist(string isbn)
 	{
-		return !await _libraryDbContext.Books.AnyAsync(x=>x.ISBN.Equals(isbn));
+		return await _libraryDbContext.Books.AnyAsync(x=>x.ISBN.Equals(isbn));
 	}
 }

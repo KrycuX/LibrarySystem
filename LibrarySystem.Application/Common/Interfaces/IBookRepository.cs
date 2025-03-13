@@ -13,5 +13,5 @@ public interface IBookRepository
     Task<Book> AddAsync(Book book);
     Task UpdateAsync(Book book);
     Task DeleteAsync(Guid id);
-	Task<bool> CheckIsbnAsync(string isbn);
+	Task<bool> IsbnExist(string isbn);
 }

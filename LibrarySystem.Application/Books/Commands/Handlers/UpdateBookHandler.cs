@@ -1,4 +1,7 @@
-﻿using LibrarySystem.Application.Common.Interfaces;
+﻿using FluentValidation.Results;
+using LibrarySystem.Application.Common.Interfaces;
+using LibrarySystem.Domain.Entities;
+using LibrarySystem.Shared;
 using LibrarySystem.Shared.Books.Commands;
 using LibrarySystem.Shared.Wrappers;
 using MediatR;
@@ -10,15 +13,30 @@ public class UpdateBookHandler(IBookRepository bookRepository) : IRequestHandler
 	private readonly IBookRepository _bookRepository = bookRepository;
 
 	public async Task<ResponseResult> Handle(UpdateBookCommand request, CancellationToken cancellationToken)
-    {
-		if (await _bookRepository.CheckIsbnAsync(request.ISBN))
-			return new(false, "ISBN must be unique");
-
+	{
 		var book = await _bookRepository.GetByIdAsync(request.Id);
 		if (book == null)
-			return new(false, $"Book of id: '{request.Id}' do not exist.");
+			throw new ValidationException(
+				[
+					new(nameof(Book), $"Book of id: '{request.Id}' do not exist.")
+				]);
 
-		book.ShelfLocation = request.ShelfLocation;
+
+		// Sprawdzamy, czy użytkownik zmienia ISBN na inny
+		if (book.ISBN != request.ISBN)
+		{
+			// Sprawdzamy, czy ten nowy ISBN już istnieje w bazie
+			var isIsbnTaken = await _bookRepository.IsbnExist(request.ISBN);
+			if (isIsbnTaken)
+			{
+				throw new ValidationException(
+				[
+					new(nameof(request.ISBN), "ISBN must be unique")
+				]);
+			}
+		}
+
+		book!.ShelfLocation = request.ShelfLocation;
 		book.ISBN = request.ISBN;
 		book.Author = request.Author;
 		book.Title = request.Title;

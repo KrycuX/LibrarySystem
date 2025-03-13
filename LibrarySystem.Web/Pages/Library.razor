@@ -62,6 +62,11 @@ else
                                 Remove
                             </button>
                         </td>
+                        <td>
+                            <button class="btn btn-danger" @onclick="() => SetDamagedBook(book.Id)" disabled="@(book.Status is not( BookStatusDto.OnShelf or BookStatusDto.Returned))">
+                                Damaged
+                            </button>
+                        </td>
                     </tr>
                 }  
             }
@@ -122,12 +127,34 @@ else
     </div>
 }
 @if (!string.IsNullOrEmpty(ErrorMessage))
-{
-    <div class="alert alert-danger">@ErrorMessage</div>
+{ <div class="modal show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" @onclick="CloseModal">&times;</button>
+            </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">@ErrorMessage</div>
+                </div>
+        </div>
+        </div>
+    </div>
 }
 @if (!string.IsNullOrEmpty(SuccessMessage))
 {
-    <div class="alert alert-success">@SuccessMessage</div>
+     <div class="modal show d-block" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" @onclick="CloseModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-success">@SuccessMessage</div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
 }
 @code {
     private int pageNumber = 1;
@@ -142,19 +169,19 @@ else
     private bool HasNextPage => pageNumber < Paginated?.TotalPages;
 
     private bool IsModalOpen = false;
-    private bool IsError = false;
+
     private bool IsEditing = false;
     private BookFormModel BookForm = new();
     private EditContext? EditContext;
     string? ErrorMessage;
     string? SuccessMessage;
+
     protected override async Task OnInitializedAsync()
     {
         await LoadPageAsync();
     }
     private async Task LoadPageAsync()
     {
-        // Pobierz dane z API, z uwzględnieniem stronicowania
         var response = await Http.GetFromJsonAsync<ApiResponse<PaginatedResult<BookDto>>>($"api/Book/GetBooks?page={pageNumber}&pageSize={pageSize}&sortBy={sortBy}&descending={sortDescending}");
         if (response?.IsSucceed == true && response.Model != null)
             Paginated = response.Model;
@@ -209,21 +236,52 @@ else
         var response = await Http.PutAsJsonAsync($"api/Book/BorrowBook?id={id}", "Użytkownik");
         if (response.IsSuccessStatusCode)
         {
+            SuccessMessage = null;
+            ErrorMessage = null;
             await LoadPageAsync();
         }
-        SuccessMessage = null;
-        ErrorMessage = null;
-    }
+        else
+        {
+            var errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
+            ErrorMessage = errorResponse?.Errors?.Any() == true
+                               ? string.Join("\n", errorResponse.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"))
+                               : "An error occurred.";
+        }
 
+    }
+    private async Task SetDamagedBook(Guid id)
+    {
+        var response = await Http.PutAsync($"api/Book/SetDamageBook?id={id}",null);
+        if (response.IsSuccessStatusCode)
+        {
+            SuccessMessage = null;
+            ErrorMessage = null;
+            await LoadPageAsync();
+        }else
+        {
+            var errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
+            ErrorMessage = errorResponse?.Errors?.Any() == true
+                                        ? string.Join("\n", errorResponse.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"))
+                                        : "An error occurred.";
+        }
+
+    }
     private async Task ReturnBook(Guid id)
     {
         var response = await Http.PutAsync($"api/Book/ReturnBook?id={id}", null);
         if (response.IsSuccessStatusCode)
         {
+            SuccessMessage = null;
+            ErrorMessage = null;
             await LoadPageAsync();
+        }else
+        {
+            var errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
+            ErrorMessage = errorResponse?.Errors?.Any() == true
+                                          ? string.Join("\n", errorResponse.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"))
+                                          : "An error occurred.";
         }
-        SuccessMessage = null;
-        ErrorMessage = null;
+
     }
 
     private async Task DeleteBook(Guid id)
@@ -231,20 +289,33 @@ else
         var response = await Http.DeleteAsync($"api/Book/DeleteBook?id={id}");
         if (response.IsSuccessStatusCode)
         {
+            SuccessMessage = null;
+            ErrorMessage = null;
             await LoadPageAsync();
+        }else
+        {
+            var errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
+            ErrorMessage = errorResponse?.Errors?.Any() == true
+                                          ? string.Join("\n", errorResponse.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"))
+                                          : "An error occurred.";
         }
-        SuccessMessage = null;
-        ErrorMessage = null;
+        
     }
     private async Task ShelveBook(Guid id)
     {
         var response = await Http.PutAsJsonAsync($"api/Book/ShelveBook?id={id}", "A1");
         if (response.IsSuccessStatusCode)
         {
+            SuccessMessage = null;
+            ErrorMessage = null;
             await LoadPageAsync();
+        }else
+        {
+            var errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
+            ErrorMessage = errorResponse?.Errors?.Any() == true
+                              ? string.Join("\n", errorResponse.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"))
+                              : "An error occurred.";
         }
-        SuccessMessage = null;
-        ErrorMessage = null;
     }
     private void OpenAddBookModal()
     {
@@ -288,7 +359,9 @@ else
             if (!response.IsSuccessStatusCode)
             {
                 var errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse>();
-                ErrorMessage = errorResponse?.Message ?? "An error occurred.";
+                ErrorMessage = errorResponse?.Errors?.Any() == true
+                                              ? string.Join("\n", errorResponse.Errors.Select(e => $"{e.PropertyName}: {e.ErrorMessage}"))
+                                              : "An error occurred.";
                 SuccessMessage = null;
             }
             else
@@ -310,7 +383,9 @@ else
             if (!response.IsSuccessStatusCode)
             {
                 var errorResponse = await response.Content.ReadFromJsonAsync<ApiResponse<BookDto>>();
-                ErrorMessage = errorResponse?.Message ?? "An error occurred.";
+                if (errorResponse?.Errors?.Count > 0)
+                    foreach (var error in errorResponse.Errors)
+                        ErrorMessage = error.PropertyName+":" +error.ErrorMessage+"\n"  ?? "An error occurred.";
                 SuccessMessage = null;
             }else
             {
@@ -335,12 +410,21 @@ else
         public T Model { get; set; }
         public string Message { get; set; }
         public string Ex { get; set; }
+        public List<ValidationError> Errors { get; set; }
     }
     public class ApiResponse
     {
         public bool IsSucceed { get; set; }
         public string Message { get; set; }
         public string Ex { get; set; }
+        public List<ValidationError> Errors { get; set; }
+    }
+    public class ValidationError
+    {
+        public string PropertyName { get; set; }
+        public string ErrorMessage { get; set; }
+        public string AttemptedValue { get; set; }
+        public string ErrorCode { get; set; }
     }
     public class BookFormModel
     {

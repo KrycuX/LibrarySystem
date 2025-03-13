@@ -1,4 +1,5 @@
 using FluentValidation;
+using FluentValidation.Results;
 using LibrarySystem.Shared.Books.Commands;
 using LibrarySystem.Shared.Books.Query;
 using LibrarySystem.Shared.DTOs;
@@ -59,7 +60,19 @@ namespace LibrarySystem.Controllers
                var result = await _mediator.Send(command);
                return CreatedAtAction(nameof(CreateBook),result);
             }
-            catch (Exception ex)
+			catch (LibrarySystem.Shared.ValidationException ex)
+			{
+                return BadRequest(new ValidationResult
+                {
+                    
+                    Errors = ex.Errors.Select(e => new ValidationFailure
+                    {
+                        PropertyName = e.PropertyName,
+                        ErrorMessage = e.ErrorMessage
+                    }).ToList()
+                });
+			}
+			catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
                 return BadRequest(ex.Message);
@@ -80,7 +93,19 @@ namespace LibrarySystem.Controllers
                 await _mediator.Send(updateBookCommand);
                 return NoContent();
             }
-            catch (Exception ex)
+			catch (Shared.ValidationException ex)
+			{
+				return BadRequest(new ValidationResult
+				{
+
+					Errors = ex.Errors.Select(e => new ValidationFailure
+					{
+						PropertyName = e.PropertyName,
+						ErrorMessage = e.ErrorMessage
+					}).ToList()
+				});
+			}
+			catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
                 return BadRequest(ex.Message);

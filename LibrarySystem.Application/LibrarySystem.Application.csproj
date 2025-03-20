@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LibrarySystem.Domain\LibrarySystem.Domain.csproj" />
-    <ProjectReference Include="..\LibrarySystem.DTO\LibrarySystem.Shared.csproj" />
+    <ProjectReference Include="..\LibrarySystem.Shared\LibrarySystem.Shared.csproj" />
   </ItemGroup>
 
 </Project>

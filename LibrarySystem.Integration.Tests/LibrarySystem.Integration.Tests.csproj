@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\LibrarySystem.Api\LibrarySystem.Api.csproj" />
     <ProjectReference Include="..\LibrarySystem.DTO\LibrarySystem.Shared.csproj" />
+    <ProjectReference Include="..\LibrarySystem.Shared\LibrarySystem.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

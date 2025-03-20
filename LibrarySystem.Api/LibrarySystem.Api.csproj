@@ -18,6 +18,7 @@
     <ProjectReference Include="..\LibrarySystem.Application\LibrarySystem.Application.csproj" />
     <ProjectReference Include="..\LibrarySystem.DTO\LibrarySystem.Shared.csproj" />
     <ProjectReference Include="..\LibrarySystem.Infrastructure\LibrarySystem.Infrastructure.csproj" />
+    <ProjectReference Include="..\LibrarySystem.Shared\LibrarySystem.Shared.csproj" />
     <ProjectReference Include="..\LibrarySystem.Web\LibrarySystem.Web.csproj" />
   </ItemGroup>
 

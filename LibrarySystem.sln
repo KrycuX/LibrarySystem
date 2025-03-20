@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibrarySystem.Application",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibrarySystem.Domain", "LibrarySystem.Domain\LibrarySystem.Domain.csproj", "{71878ADB-83B6-427E-A21D-BA7341DD5810}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibrarySystem.Shared", "LibrarySystem.DTO\LibrarySystem.Shared.csproj", "{44B19F7A-3129-4F01-82D7-85685BCE3D07}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibrarySystem.Shared", "LibrarySystem.Shared\LibrarySystem.Shared.csproj", "{44B19F7A-3129-4F01-82D7-85685BCE3D07}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibrarySystem.Infrastructure", "LibrarySystem.Infrastructure\LibrarySystem.Infrastructure.csproj", "{0550ADAE-88C7-4ADD-9322-A0301DED2E2C}"
 EndProject
